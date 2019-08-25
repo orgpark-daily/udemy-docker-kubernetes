@@ -1,6 +1,68 @@
 # Personal Lecture Notes for Docker and Kubernetes at Udemy
 ## Section 2: Manipulating Containers with the Docker Client
 
+docker run image-name commands
+
+```
+// Examples
+docker run busybox echo hi there
+docker run busybox ls
+```
+List all running containers
+```
+docker ps
+
+# All the containers I have executed
+docker ps --all 
+```
+
+### Lifecycle of Containers
+docker run = docker create + docker start
+```
+docker create hello-world
+> b3b140c9412af2baf5cb1613070b6f8c5d82575b7373b1eb6abc4e5a2c02b5f0
+
+# Print the output to my terminal
+docker start -a b3b140c9412af2baf5cb1613070b6f8c5d82575b7373b1eb6abc4e5a2c02b5f0
+
+```
+
+Restart a exited container
+```
+docker start -a CONTAINER_ID # -a for attch
+```
+
+Remove stopped processes
+```
+docker system prune
+```
+
+Retrieve log outputs
+```
+docker log CONTAINER_ID
+```
+
+Stop currently running containers
+```
+docker stop CONTAINER_ID # Recommended: after about 10 sec. grace period
+docker kill CONTAINER_ID # immediate system call
+```
+
+Execute an additional command in a container
+```
+# -it allows us to input to the container
+docker exec -it CONTAINER_ID command
+
+# start a shell of the running container
+docker exec -it CONTAINER_ID sh
+
+# can start sh using busybox
+docker run -it busybox sh
+```
+
+### Container Isolation
+**Two running containers absolutely don't share file system or hardware resources**
+
 
 ## Section 1: Dive Into Docker
 Why use Docker: easy to install and run software without worrying about setup or dependencies
