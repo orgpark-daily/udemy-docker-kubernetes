@@ -329,3 +329,40 @@ services:
 ```
 docker-compose ps # can run only in which that contains docker-compose.yml
 ```
+## Section 6: Creating a Production-Grade Workflow
+
+### Development Workflow
+Development -> Testing -> Deployment
+
+### Client React App
+```
+npx create-react-app front-end
+cd front-end
+
+npm run start
+npm run test
+npm run build
+```
+
+### Dev Dockerfile
+```
+# Dockerfile.dev
+
+FROM node:alpine
+
+WORKDIR '/app'
+
+COPY package.json .
+RUN npm install
+
+COPY . .
+
+CMD ["npm", "run", "start"]
+
+```
+
+Specify Dockerfile name
+```
+docker build -f Dockerfile.dev .
+```
+
