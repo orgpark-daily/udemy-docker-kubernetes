@@ -1,4 +1,7 @@
 # Personal Lecture Notes for Docker and Kubernetes at Udemy
+## Resources
+- Download Docker for Mac: https://download.docker.com/mac/stable/Docker.dmg
+
 
 ## Section 1: Dive Into Docker
 Why use Docker: easy to install and run software without worrying about setup or dependencies
@@ -81,6 +84,11 @@ docker system prune
 Retrieve log outputs
 ```
 docker logs CONTAINER_ID
+```
+
+Run in background
+```
+docker run -d redis
 ```
 
 Stop currently running containers
@@ -225,3 +233,99 @@ COPY ./ ./
 CMD ["npm", "start"]
 ```
 
+## Section 5: Docker Compose with Multiple Local Containers
+#### Docker Compose 
+A framework that allows developers to define container-based applications in a single YAML file. This is for **same** host
+
+#### Docker Swarm
+For multiple hosts
+
+#### Kubernetes
+A container orchestration tool developed by Google. Kubernetes goal is very similar as that for Docker swarm.
+
+### Components
+- web browser
+- Node.js container
+- redis container: keeps track of # of visits
+
+**Need a network connection between Node.js container and redis container**
+### Docker Compose
+- separate CLI
+- automates repetitive commands
+- encode commands in *docker-compose.yml*
+#### docker-compose.yml
+```
+version: '3'
+services:
+  redis-server:
+    image: 'redis'
+  node-app:
+    build: .
+    ports:
+      - "4001:8081" # dash '-' is for array in yml
+```
+#### Networking with Docker Compose
+```
+// index.js
+const express = require('express');
+const redis = require('redis');
+
+const app = express();
+const client = redis.createClient({
+    host: 'redis-server', // the name specified in the yml file
+    port: 6379
+});
+
+app.get('/', (req, res) => {
+    client.get('visits', (err, visits) => {
+        res.send('Number of visits is ' + visits);
+        client.set('visits', parseInt(visits) + 1);
+    });
+});
+
+app.listen(8081, () => {
+    console.log('Listening on port 8081');
+})
+
+```
+
+#### Docker Compose Commands
+```
+# docker run myimage: 
+docker-compose up
+
+# docker build . + docker run myimage: 
+docker-compose up --build
+
+# Launch in background
+docker-compose up -d
+
+# Stop containers
+docker-compose down
+
+```
+
+#### Automatic Container Restarts
+Restart Policies
+- "no": never restart # no is reserved for false in yml files
+- always: for any reson, tries to restart
+- on-failure: only restart if the container stops with an error code
+- unless-stopped: always restart unless we the developers forcibly stop it
+
+```
+version: '3'
+services:
+  redis-server:
+    image: 'redis'
+  node-app:
+    restart: always
+    build: .
+    ports:
+      - "4001:8081" # dash '-' is for array in yml
+      
+```
+
+#### Container Status with Docker Compose
+```
+docker-compose ps # can run only in which that contains docker-compose.yml
+```
