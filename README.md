@@ -366,3 +366,59 @@ Specify Dockerfile name
 docker build -f Dockerfile.dev .
 ```
 
+### Docker Volumes: Referencing Local Files
+```
+# -v /app/node_modules: put a bookmark on the node_modules folder
+# -v $(pwd):/app: Map the pwd into the '/app' folder
+docker run -p 3000:3000 -v /app/node_modules -v $(pwd):/app <image_id>
+```
+Command is too long. Avoid it using **docker-compose.yml** file.
+```
+# docker-compose.yml
+# docker-compose up
+version: '3'
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    ports:
+      - "3000:3000"
+    volumes:
+      - /app/node_modules
+      - .:/app
+```
+### Executing Tests
+```
+docker run -it 05965a16b105 npm run test
+```
+### Live Updating Tests
+One way: Attach to currently running container
+```
+docker exec -it eb32b34dbd5c npm run test
+```
+
+Another way: Setup a second service in docker-compose.yml
+```
+version: '3'
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    ports:
+      - "3000:3000"
+    volumes:
+      - /app/node_modules
+      - .:/app
+  test:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    volumes:
+      - /app/node_modules
+      - .:/app
+    command: ["npm", "run", "test"]
+```
+
+
