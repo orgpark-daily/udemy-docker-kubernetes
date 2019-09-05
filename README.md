@@ -73,7 +73,7 @@ docker start -a b3b140c9412af2baf5cb1613070b6f8c5d82575b7373b1eb6abc4e5a2c02b5f0
 
 Restart a exited container
 ```
-docker start -a CONTAINER_ID # -a for attch
+docker start -a CONTAINER_ID # -a for attach
 ```
 
 Remove stopped processes
@@ -367,6 +367,8 @@ docker build -f Dockerfile.dev .
 ```
 
 ### Docker Volumes: Referencing Local Files
+**Purpose: to apply code change instantly**
+
 ```
 # -v /app/node_modules: put a bookmark on the node_modules folder
 # -v $(pwd):/app: Map the pwd into the '/app' folder
@@ -420,5 +422,43 @@ services:
       - .:/app
     command: ["npm", "run", "test"]
 ```
+### Need fo Nginx
+- npm run start: Starts up a development server. Development use only
+- npm run test: Runs test associated with the project
+- **npm run build: Builds a production version of the application**
 
+We need a web container for production such as **Nginx** to serve static files
 
+### Multi-Step Docker Builds
+Build phase:
+1. Use node:alpine
+2. Copy the package.json file
+3. Install dependencies --> npm run build will take care of it
+4. Run 'npm run build'
+
+Run phase:
+5. Start nginx --> setup needed
+6. Copy over the result of **npm run build**
+7. Start nginx
+
+```
+# build phase
+FROM node:alpine as builder
+WORKDIR '/app'
+COPY package.json .
+RUN npm install
+COPY . .
+RUN npm run build
+
+# run phase
+FROM nginx
+COPY --from=builder /app/build /usr/share/nginx/html
+
+```
+
+```
+docker build .
+docker run -p 8080:80 CONTAINER_ID
+```
+
+## Section 7: Continuous Integration and Deployment with AWS
