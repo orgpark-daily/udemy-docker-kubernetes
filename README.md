@@ -235,7 +235,7 @@ CMD ["npm", "start"]
 
 ## Section 5: Docker Compose with Multiple Local Containers
 #### Docker Compose 
-A framework that allows developers to define container-based applications in a single YAML file. This is for **same** host
+A framework that allows developers to define container-based applications in a single YAML file. This is for the **same** host
 
 #### Docker Swarm
 For multiple hosts
