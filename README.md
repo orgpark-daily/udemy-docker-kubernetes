@@ -495,3 +495,6 @@ Additionally, you may want to set the following property if your travis build fa
 ```
 language: generic 
 ```
+
+### Elastic Beanstalk
+Deployment orchestration services by AWS. Application performance monitoring, automatic upsclaing, downscaling, better performance, fault-tolerant application, rubust security features, user authentication, increased availability of an application are the benefits
