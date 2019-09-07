@@ -3,7 +3,7 @@ services:
   - docker
 
 before_install:
-  - docker build -t image_name -f Dockerfile.dev .
+  - docker build -t image_name -f Dockerfile.dev ./section6-frontend
 
 script:
   - docker run -e CI=true image_name npm run test
