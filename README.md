@@ -497,4 +497,4 @@ language: generic
 ```
 
 ### Elastic Beanstalk
-Deployment orchestration services by AWS. Application performance monitoring, automatic upsclaing, downscaling, better performance, fault-tolerant application, rubust security features, user authentication, increased availability of an application are the benefits
+Deployment orchestration services by AWS. Application performance monitoring, automatic upsclaing, downscaling, better performance, fault-tolerant application, robust security features, user authentication, increased availability of an application are the benefits
