@@ -489,7 +489,7 @@ script:
 ```
 You can read up on the CI=true variable here: https://facebook.github.io/create-react-app/docs/running-tests#linux-macos-bash
 
-and enviornment variables in Docker here: https://docs.docker.com/engine/reference/run/#env-environment-variables
+and environment variables in Docker here: https://docs.docker.com/engine/reference/run/#env-environment-variables
 
 Additionally, you may want to set the following property if your travis build fails with “rakefile not found” by adding to the top of your .travis.yml file:
 ```
@@ -497,4 +497,4 @@ language: generic
 ```
 
 ### Elastic Beanstalk
-Deployment orchestration services by AWS. Application performance monitoring, automatic upsclaing, downscaling, better performance, fault-tolerant application, rubust security features, user authentication, increased availability of an application are the benefits
+Deployment orchestration services by AWS. Application performance monitoring, automatic upscaling, downscaling, better performance, fault-tolerant application, robust security features, user authentication, increased availability of an application are the benefits
