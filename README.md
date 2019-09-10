@@ -498,3 +498,32 @@ language: generic
 
 ### Elastic Beanstalk
 Deployment orchestration services by AWS. Application performance monitoring, automatic upscaling, downscaling, better performance, fault-tolerant application, robust security features, user authentication, increased availability of an application are the benefits
+
+It monitors the traffic. If the traffic increases, it automatically scales.
+
+.travis.yml
+```
+sudo: required
+services:
+  - docker
+
+before_install:
+  - docker build -t image_name -f ./section6-frontend/Dockerfile.dev ./section6-frontend
+
+script:
+  - docker run -e CI=true image_name npm run test
+
+deploy:
+  provider: elasticbeanstalk
+  region: "ap-northeast-2"
+  app: "front-end"
+  env: "DockerReactSection6-env"
+  bucket_name: "elasticbeanstalk-ap-northeast-2-988703214432"
+  bucket_path: "ap-northeast-2"
+  on:
+    branch: master
+  access_key_id:
+    secure: $AWS_ACCESS_KEY
+  secret_access_key:
+    secure: $secret
+```
