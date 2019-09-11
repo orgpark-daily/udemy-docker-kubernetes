@@ -516,7 +516,7 @@ script:
 deploy:
   provider: elasticbeanstalk
   region: "ap-northeast-2"
-  app: "front-end"
+  app: "docker-react-section6" # same as elastic beanstalk app name
   env: "DockerReactSection6-env"
   bucket_name: "elasticbeanstalk-ap-northeast-2-988703214432"
   bucket_path: "ap-northeast-2"
