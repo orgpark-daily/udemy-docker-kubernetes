@@ -7,6 +7,7 @@ before_install:
   - docker build -t image_name .
 
 script:
+  - cd section6-frontend
   - docker run -e CI=true image_name npm run test
 
 deploy:
