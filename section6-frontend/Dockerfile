@@ -9,4 +9,4 @@ RUN npm run build
 # run phase
 FROM nginx:stable-alpine
 EXPOSE 80
-COPY --from=builder /app/build /usr/share/nginx/html # check nginx document for directory
+COPY --from=builder /app/build /usr/share/nginx/html
