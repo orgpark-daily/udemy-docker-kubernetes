@@ -527,3 +527,22 @@ deploy:
   secret_access_key:
     secure: $secret
 ```
+
+### Port Mapping
+Even if you go through the Docker and Elastic Beanstalk, it doesn't really tell about the port mapping.
+
+Add EXPOSE in Dockerfile
+```
+# build phase
+FROM node:alpine as builder
+WORKDIR '/app'
+COPY package.json .
+RUN npm install
+COPY . .
+RUN npm run build
+
+# run phase
+FROM nginx:stable-alpine
+EXPOSE 80
+COPY --from=builder /app/build /usr/share/nginx/html # check nginx document for directory
+```
