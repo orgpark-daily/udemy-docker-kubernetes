@@ -4,7 +4,7 @@ services:
 
 before_install:
   - cd section6-frontend
-  - docker build -t image_name -f ./Dockerfile .
+  - docker build -t image_name .
 
 script:
   - docker run -e CI=true image_name npm run test
