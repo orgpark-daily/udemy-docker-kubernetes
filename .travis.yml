@@ -3,11 +3,9 @@ services:
   - docker
 
 before_install:
-  - cd section6-frontend
-  - docker build -t image_name .
+  - docker build -t image_name -f ./section6-frontend/Dockerfile ./section6-frontend
 
 script:
-  - cd section6-frontend
   - docker run -e CI=true image_name npm run test
 
 deploy:
