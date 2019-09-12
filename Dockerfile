@@ -1,9 +1,9 @@
 # build phase
 FROM node:alpine as builder
 WORKDIR '/app'
-COPY package*.json ./
+COPY package*.json ./section6-frontend
 RUN npm install
-COPY . .
+COPY ./section6-frontend .
 RUN npm run build
 
 # run phase
