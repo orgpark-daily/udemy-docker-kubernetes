@@ -556,9 +556,22 @@ COPY --from=builder /app/build /usr/share/nginx/html # check nginx document for 
 ### Environment Cleanup
 - Click on 'Delete Application' then confirm the delete
 
-## Section 8: Building a Multi-Container Application
+## Section 8: Building a Multi-Container Application (Important Full-Stack Section!!!)
 
 ### Single Container Deployment Issues
 - The app was simple - no outside dependencies
 - Our image was built multiple times
 - How do we connect to a database from a container
+
+### Architecture
+![image](https://user-images.githubusercontent.com/54085026/64928727-46050800-d857-11e9-81ee-8d0958b74f6c.png)
+
+![image](https://user-images.githubusercontent.com/54085026/64928772-aac06280-d857-11e9-9aff-48f008f31f58.png)
+
+![image](https://user-images.githubusercontent.com/54085026/64928810-07bc1880-d858-11e9-94d8-cd474f4ba085.png)
+
+#### Worker
+1. Watches redis for new indicies.
+2. Pulls each new index. 
+3. Calculates new value
+4. Puts it back into Redis
