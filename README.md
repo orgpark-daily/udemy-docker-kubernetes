@@ -552,3 +552,7 @@ COPY --from=builder /app/build /usr/share/nginx/html # check nginx document for 
 ### Workflow with Github
 1. Travis CI test gets run on PR. 
 2. Deploy happens when merged
+
+### Environment Cleanup
+- Click on 'Delete Application' then confirm the delete
+
