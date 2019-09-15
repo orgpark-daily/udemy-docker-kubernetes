@@ -556,3 +556,9 @@ COPY --from=builder /app/build /usr/share/nginx/html # check nginx document for 
 ### Environment Cleanup
 - Click on 'Delete Application' then confirm the delete
 
+## Section 8: Building a Multi-Container Application
+
+### Single Container Deployment Issues
+- The app was simple - no outside dependencies
+- Our image was built multiple times
+- How do we connect to a database from a container
