@@ -437,6 +437,7 @@ Build phase:
 4. Run 'npm run build'
 
 Run phase:
+
 5. Start nginx --> setup needed
 6. Copy over the result of **npm run build**
 7. Start nginx
@@ -547,3 +548,7 @@ FROM nginx:stable-alpine
 EXPOSE 80
 COPY --from=builder /app/build /usr/share/nginx/html # check nginx document for directory
 ```
+
+### Workflow with Github
+1. Travis CI test gets run on PR. 
+2. Deploy happens when merged
