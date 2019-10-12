@@ -571,7 +571,7 @@ COPY --from=builder /app/build /usr/share/nginx/html # check nginx document for 
 ![image](https://user-images.githubusercontent.com/54085026/64928810-07bc1880-d858-11e9-94d8-cd474f4ba085.png)
 
 #### Worker
-1. Watches redis for new indicies.
+1. Watches redis for new indices.
 2. Pulls each new index. 
 3. Calculates new value
 4. Puts it back into Redis
