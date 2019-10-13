@@ -575,3 +575,182 @@ COPY --from=builder /app/build /usr/share/nginx/html # check nginx document for 
 2. Pulls each new index. 
 3. Calculates new value
 4. Puts it back into Redis
+
+**./section8-complex contains all files**
+
+## Section 9: "Dockerizing" Multiple Services
+*Focusing on DEV version*
+
+Steps:
+
+1. Copy over package.json
+2. Run 'npm install'
+3. Copy over everything else
+4. Docker compose should set up a volume to 'share' files
+
+```
+client/Dockerfile.dev
+
+FROM node:alpine
+WORKDIR '/app'
+COPY ./package.json ./
+RUN npm install
+COPY . .
+CMD npm run start
+```
+```
+docker build -f Dockerfile.dev .
+docker run 9a3d36ed122a # example
+```
+
+
+```
+server/Dockerfile.dev
+
+FROM node:alpine
+WORKDIR '/app'
+COPY ./package.json ./
+RUN npm install
+COPY . .
+CMD ["npm", "run", "dev"]
+```
+
+```
+server/Dockerfile.dev
+
+FROM node:alpine
+WORKDIR '/app'
+COPY ./package.json ./
+RUN npm install
+COPY . .
+CMD ["npm", "run", "dev"]
+```
+
+### Compose Groups
+Combine
+- Express Server
+  - Specify build
+  - Specify volumes # so the source code change can be reflected on-the-fly
+  - Specify env variables
+- Redis Server
+  - what image to use?
+- Postgres
+  - what image to use?
+
+- Worker
+  - Specify build
+  - Specify volumes # so the source code change can be reflected on-the-fly
+  - Specify env variables
+- Client
+  - Specify build
+  - Specify volumes # so the source code change can be reflected on-the-fly
+  - Specify env variables
+```
+docker-compose.yml
+
+version: '3'
+services:
+  postgres:
+    image: 'postgres:latest'
+  redis:
+    image: 'redis:latest'
+  api:
+    depends_on:
+      - postgres
+    build:
+      dockerfile: Dockerfile.dev
+      context: ./server
+    volumes:
+      - /app/node_modules
+      - ./server:/app
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - PGUSER=postgres
+      - PGDATABASE=postgres
+      - PGHOST=postgres
+      - PGPASSWORD=postgres_password
+      - PGPORT=5432
+  client:
+    build:
+      dockerfile: Dockerfile.dev
+      context: ./client
+    volumes:
+      - /app/node_modules
+      - ./client:/app
+  worker:
+    build:
+      dockerfile: Dockerfile.dev
+      context: ./worker
+    volumes:
+      - /app/node_modules
+      - ./worker:/app
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+  nginx:
+    restart: always
+    build:
+      dockerfile: Dockerfile.dev
+      context: ./nginx
+    ports:
+      - '3050:80'
+
+
+```
+
+```
+# to run it
+docker-compose up
+```
+### Nginx
+In production environment the specifying port might be cumbersome. Ports can be changed any time. Thus we use prefixes such as '/api'
+- redirects '/' -> React Server
+- redirects '/api/' -> Express Server
+
+#### default.conf
+- Adds configuration rules to Nginx
+- Do not use 'server' as a service name
+
+```
+upstream client {
+  server client:3000;
+}
+
+upstream api {
+  server api:5000;
+}
+
+server {
+  listen 80;
+
+  location / {
+    proxy_pass http://client;
+  }
+
+  # for websocket connections
+  location /sockjs-node {
+    proxy_pass http://client;
+    proxy_http_version 1.1;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection "Upgrade";
+  }
+
+  location /api {
+    rewrite /api/(.*) /$1 break;
+    proxy_pass http://api;
+  }
+}
+```
+
+```
+./nginx/Dockerfile.dev 
+
+FROM nginx
+COPY ./default.conf /etc/nginx/conf.d/default.conf
+```
+
+### Starting Up Docker Compose
+```
+docker-compose up --build
+```
