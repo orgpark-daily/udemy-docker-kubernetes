@@ -1,0 +1,24 @@
+sudo: required
+
+services:
+  - docker
+
+before_install:
+  - docker build -t orgpark/react-test -f ./client/Dockerfile.dev ./client
+
+script:
+  - docker run -e CI=true orgpark/react-test npm test
+
+after_success:
+  - docker build -t orgpark/multi-client ./client
+  - docker build -t orgpark/multi-nginx ./nginx
+  - docker build -t orgpark/multi-server ./server
+  - docker build -t orgpark/multi-worker ./worker
+
+  # Log in to the docker CLI
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  # Take those images and push them to the docker hub.
+  - docker push orgpark/multi-client
+  - docker push orgpark/multi-nginx
+  - docker push orgpark/multi-server
+  - docker push orgpark/multi-worker

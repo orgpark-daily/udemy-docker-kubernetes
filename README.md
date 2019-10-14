@@ -754,3 +754,88 @@ COPY ./default.conf /etc/nginx/conf.d/default.conf
 ```
 docker-compose up --build
 ```
+
+## Section 10: A Continuous Integration Workflow for Multiple Images
+### Our Single Container Setup
+1. Push code to Github
+2. Travis automatically pulls repo
+3. Travis builds an image, tests code
+4. Travis pushes code to AWS EB
+5. EB builds image, deploys it
+
+### Our Multi Container Setup
+No more EB dependencies on building images
+1. Push code to Github
+2. Travis  automatically pulls repo
+3. Travis builds a test image, tests code
+4. Travis builds prod(uction) images
+5. Travis pushes built prod images to Docker Hub
+6. Travis pushes project to AWS EB
+7. EB pulls images from Docker Hub, deploys
+
+### Travis
+1. Specify docker as a dependency
+2. Build test version of React project
+3. Run tests
+4. Build prod versions of all projects
+5. Push all to docker hub
+6. Tell Elastic Beanstalk to update
+
+```
+.travis.yml
+
+sudo: required
+
+services:
+  - docker
+
+before_install:
+  - docker build -t orgpark/react-test -f ./client/Dockerfile.dev ./client
+
+script:
+  - docker run -e CI=true orgpark/react-test npm test
+
+after_success:
+  - docker build -t orgpark/multi-client ./client
+  - docker build -t orgpark/multi-nginx ./nginx
+  - docker build -t orgpark/multi-server ./server
+  - docker build -t orgpark/multi-worker ./worker
+
+  # Log in to the docker CLI
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  # Take those images and push them to the docker hub.
+  - docker push orgpark/multi-client
+  - docker push orgpark/multi-nginx
+  - docker push orgpark/multi-server
+  - docker push orgpark/multi-worker
+```
+
+## Section 11: Multi-Container Deployments to AWS
+Dockerrun.aws.json file is used to determine which images to go and pull.
+
+***Amazon ECS Task Definition document should be referred to understand better for the container***
+
+![image](https://user-images.githubusercontent.com/54085026/66755267-9a40ed80-eed2-11e9-9157-4a917c5fcb94.png)
+
+Production Architecture
+![image](https://user-images.githubusercontent.com/54085026/66782031-c7f85780-ef0f-11e9-8a82-97539f65494a.png)
+
+### AWS Elastic Cache & AWS RDS
+- Automatically creates and maintains Redis instances for you
+- Super easy to scale
+- Built-in logging + maintenance
+- Probably better security than what we can do
+- Easier to migrate off of EB with
+- Automated backups and rollbacks(AWS RDS)
+
+***AWS Redis and Postgres is worth using it. That will seriously save your time & money although we are practicing our own DB + redis later on***
+
+### Overview of AWS VPC's and Security Groups
+- By default services can't talk to each other
+- VPC: Virtual Private Cloud
+- One 'default' VPC per region
+![image](https://user-images.githubusercontent.com/54085026/66782981-e9f2d980-ef11-11e9-9637-69512fc73c85.png)
+
+![image](https://user-images.githubusercontent.com/54085026/66783216-6e455c80-ef12-11e9-9b24-210093b2ac03.png)
+
+
