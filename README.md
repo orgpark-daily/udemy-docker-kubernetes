@@ -838,4 +838,14 @@ Production Architecture
 
 ![image](https://user-images.githubusercontent.com/54085026/66783216-6e455c80-ef12-11e9-9b24-210093b2ac03.png)
 
+### Lecture 164. Cleaning Up Aws Resources
+- Elastic Beanstalk
+- RDS
+- Elastic Cache
+- VPC -> Security Groups
+- IAM
+
+### Lecture 8-10 AWS Configuration Cheat Sheet
+https://www.udemy.com/course/docker-and-kubernetes-the-complete-guide/learn/lecture/15435906#overview
+
 
